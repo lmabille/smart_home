@@ -70,12 +70,11 @@ class SmartHome:
         The infrared distance sensor is used to determine whether someone is inside the room.
         """
         if self.check_room_occupancy() and self.measure_lux() < 500:
-            GPIO.output(self.LED_PIN, GPIO.HIGH)
+            GPIO.output(self.LIGHT_PIN, GPIO.HIGH)
             self.light_on = True
         else:
-            GPIO.output(self.LED_PIN, GPIO.LOW)
+            GPIO.output(self.LIGHT_PIN, GPIO.LOW)
             self.light_on = False
-
 
         """
         User story 3:
@@ -101,7 +100,7 @@ class SmartHome:
     def close_window(self) -> None:
         duty_cycle = (180/18) + 2
         self.servo.ChangeDutyCycle(duty_cycle)
-        self.window_open = True
+        self.window_open = False
 
     def manage_window(self) -> None:
         """
@@ -115,8 +114,8 @@ class SmartHome:
         Please note that the above behavior is only triggered when both of the sensors measure
         temperature in the range of 18 to 30 degrees celsius. Otherwise, the window stays closed.
         """
-        indoor_temperature = GPIO.input(self.dht_indoor)
-        outdoor_temperature = GPIO.input(self.dht_outdoor)
+        indoor_temperature = self.dht_indoor.temperature
+        outdoor_temperature = self.dht_outdoor.temperature
         try:
             # Your code goes here
             if 18 <= indoor_temperature <= 30 \
